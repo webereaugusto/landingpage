@@ -4,11 +4,15 @@
     { "src": "server.js", "use": "@vercel/node" },
     { "src": "*.html", "use": "@vercel/static" },
     { "src": "*.css", "use": "@vercel/static" },
-    { "src": "*.js", "use": "@vercel/static" },
+    { "src": "dashboard.js", "use": "@vercel/static" },
     { "src": "*.json", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/dashboard", "dest": "/dashboard.html" },
+    { "src": "/dashboard.html", "dest": "/dashboard.html" },
     { "src": "/api/(.*)", "dest": "/server.js" },
+    { "src": "/(.*)\\.js", "dest": "/$1.js" },
+    { "src": "/(.*)\\.css", "dest": "/$1.css" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 } 

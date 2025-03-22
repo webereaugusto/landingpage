@@ -9,7 +9,19 @@ const isVercel = process.env.VERCEL === '1';
 
 // Middleware para processar JSON e servir arquivos estáticos
 app.use(bodyParser.json({ limit: '1mb' }));
-app.use(express.static(__dirname));
+
+// Configuração explícita para servir arquivos estáticos da raiz
+app.use(express.static(path.join(__dirname)));
+
+// Rota explícita para servir o dashboard.html
+app.get('/dashboard.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
+// Rota alternativa para /dashboard
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
 
 // Middleware para logar todas as requisições
 app.use((req, res, next) => {
@@ -106,6 +118,69 @@ app.post('/api/content', (req, res) => {
 // Rota para testar se o servidor está respondendo
 app.get('/api/test', (req, res) => {
     res.json({ message: 'Servidor funcionando corretamente!' });
+});
+
+// Rota para verificar os arquivos no servidor
+app.get('/api/check-files', (req, res) => {
+    try {
+        const filesToCheck = [
+            'index.html',
+            'dashboard.html',
+            'styles.css',
+            'dashboard.js',
+            'data.json',
+            'server.js',
+            'vercel.json'
+        ];
+        
+        const fileStatus = {};
+        
+        // Verifica cada arquivo
+        filesToCheck.forEach(file => {
+            const filePath = path.join(__dirname, file);
+            if (fs.existsSync(filePath)) {
+                const stats = fs.statSync(filePath);
+                fileStatus[file] = {
+                    exists: true,
+                    size: stats.size,
+                    lastModified: stats.mtime
+                };
+            } else {
+                fileStatus[file] = {
+                    exists: false
+                };
+            }
+        });
+        
+        // Lista todos os arquivos na pasta raiz
+        const allFiles = [];
+        try {
+            const files = fs.readdirSync(__dirname);
+            files.forEach(file => {
+                const filePath = path.join(__dirname, file);
+                const stats = fs.statSync(filePath);
+                allFiles.push({
+                    name: file,
+                    isDirectory: stats.isDirectory(),
+                    size: stats.size
+                });
+            });
+        } catch (error) {
+            console.error('Erro ao listar arquivos:', error);
+        }
+        
+        res.json({
+            currentDirectory: __dirname,
+            checkedFiles: fileStatus,
+            allFiles: allFiles,
+            environment: {
+                isVercel: isVercel,
+                nodeEnv: process.env.NODE_ENV
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao verificar arquivos', details: error.message });
+    }
 });
 
 // Garantir que o arquivo data.json existe em ambiente de desenvolvimento
