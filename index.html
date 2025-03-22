@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page Simples</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .loading {
+            opacity: 0.7;
+            font-style: italic;
+        }
+        
+        .error {
+            color: red;
+            padding: 10px;
+            background-color: #ffeeee;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="errorMessage" class="error">
+            Erro ao carregar conteúdo. Por favor, recarregue a página.
+        </div>
+        
+        <h1 id="mainTitle" class="loading">Carregando...</h1>
+        <p id="mainDescription" class="loading">Carregando...</p>
+        <a href="#" class="cta-button">Saiba Mais</a>
+        
+        <div class="cards">
+            <div class="card">
+                <h2 id="card1Title" class="loading">Carregando...</h2>
+                <p id="card1Description" class="loading">Carregando...</p>
+            </div>
+            <div class="card">
+                <h2 id="card2Title" class="loading">Carregando...</h2>
+                <p id="card2Description" class="loading">Carregando...</p>
+            </div>
+            <div class="card">
+                <h2 id="card3Title" class="loading">Carregando...</h2>
+                <p id="card3Description" class="loading">Carregando...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função para remover a classe loading de um elemento
+        function removeLoadingClass(elementId) {
+            document.getElementById(elementId).classList.remove('loading');
+        }
+        
+        // Função para verificar se a API está funcionando
+        async function testApiConnection() {
+            try {
+                const response = await fetch('/api/test');
+                return response.ok;
+            } catch (error) {
+                console.error('Erro ao testar conexão com API:', error);
+                return false;
+            }
+        }
+        
+        // Função para atualizar o conteúdo com valores padrão em caso de erro
+        function setDefaultContent() {
+            document.getElementById('errorMessage').style.display = 'block';
+            
+            const elements = {
+                'mainTitle': 'Bem-vindo à Nossa Landing Page',
+                'mainDescription': 'Esta é uma landing page simples criada para demonstrar HTML e CSS básicos.',
+                'card1Title': 'Nossos Serviços',
+                'card1Description': 'Oferecemos soluções personalizadas para seu negócio.',
+                'card2Title': 'Sobre Nós',
+                'card2Description': 'Experiência e qualidade em todos os projetos.',
+                'card3Title': 'Contato',
+                'card3Description': 'Entre em contato e faça um orçamento.'
+            };
+            
+            // Atualizar cada elemento com o valor padrão
+            for (const [id, value] of Object.entries(elements)) {
+                const element = document.getElementById(id);
+                element.textContent = value;
+                element.classList.remove('loading');
+            }
+        }
+
+        // Função para carregar o conteúdo da página
+        async function loadPageContent() {
+            // Testar conexão com a API
+            const isApiWorking = await testApiConnection();
+            
+            if (!isApiWorking) {
+                setDefaultContent();
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/content');
+                
+                if (!response.ok) {
+                    throw new Error(`Erro na resposta: ${response.status} ${response.statusText}`);
+                }
+                
+                const content = await response.json();
+                
+                // Remover classes de loading e atualizar conteúdo
+                const elements = [
+                    'mainTitle', 'mainDescription', 
+                    'card1Title', 'card1Description',
+                    'card2Title', 'card2Description',
+                    'card3Title', 'card3Description'
+                ];
+                
+                elements.forEach(id => removeLoadingClass(id));
+                
+                // Atualizar elementos com o conteúdo
+                document.getElementById('mainTitle').textContent = content.mainTitle;
+                document.getElementById('mainDescription').textContent = content.mainDescription;
+                
+                document.getElementById('card1Title').textContent = content.card1Title;
+                document.getElementById('card1Description').textContent = content.card1Description;
+                
+                document.getElementById('card2Title').textContent = content.card2Title;
+                document.getElementById('card2Description').textContent = content.card2Description;
+                
+                document.getElementById('card3Title').textContent = content.card3Title;
+                document.getElementById('card3Description').textContent = content.card3Description;
+                
+                console.log('Conteúdo carregado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao carregar conteúdo:', error);
+                setDefaultContent();
+            }
+        }
+
+        // Carregar conteúdo ao iniciar a página
+        document.addEventListener('DOMContentLoaded', loadPageContent);
+    </script>
+</body>
+</html> 

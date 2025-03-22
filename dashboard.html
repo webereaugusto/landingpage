@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Gerenciador de Conteúdo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .dashboard {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .success-message {
+            color: green;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>Gerenciador de Conteúdo</h1>
+        
+        <div class="form-group">
+            <h2>Cabeçalho Principal</h2>
+            <label for="mainTitle">Título Principal:</label>
+            <input type="text" id="mainTitle" name="mainTitle">
+            <label for="mainDescription">Descrição Principal:</label>
+            <textarea id="mainDescription" name="mainDescription" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+            <h2>Card 1</h2>
+            <label for="card1Title">Título:</label>
+            <input type="text" id="card1Title" name="card1Title">
+            <label for="card1Description">Descrição:</label>
+            <textarea id="card1Description" name="card1Description" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+            <h2>Card 2</h2>
+            <label for="card2Title">Título:</label>
+            <input type="text" id="card2Title" name="card2Title">
+            <label for="card2Description">Descrição:</label>
+            <textarea id="card2Description" name="card2Description" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+            <h2>Card 3</h2>
+            <label for="card3Title">Título:</label>
+            <input type="text" id="card3Title" name="card3Title">
+            <label for="card3Description">Descrição:</label>
+            <textarea id="card3Description" name="card3Description" rows="3"></textarea>
+        </div>
+
+        <button onclick="saveContent()">Salvar Alterações</button>
+        <p id="successMessage" class="success-message">Conteúdo salvo com sucesso!</p>
+    </div>
+    <script src="dashboard.js"></script>
+</body>
+</html> 
